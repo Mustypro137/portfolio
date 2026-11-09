@@ -21,17 +21,18 @@ export const site: SiteContent = {
   about: {
     bio: [
       "I'm a self-taught front-end developer. I learned to code through documentation, online resources and building my own projects, one step at a time.",
-      "I enjoy taking an idea and turning it into something people can use. I care about clean layouts, simple interactions and websites that work well for everyone.",
+      "I build web interfaces with HTML, CSS and JavaScript, and I also use Python for scripting and automation. I enjoy taking an idea and turning it into something people can use, and I care about clean layouts, simple interactions and websites that work well for everyone.",
       "I don't have a degree or industry experience yet. I have projects, practice and a steady habit of learning. My goal is to build strong fundamentals and grow into a developer a team can rely on.",
     ],
     location: "Abidjan, Ivory Coast",
-    workPreference: "A junior front-end role (remote), and freelance websites for small businesses",
+    workPreference:
+      "Junior front-end roles, internships and apprenticeships (remote or international), freelance projects and open-source collaborations",
     story: {
       title: "My story",
       paragraphs: [
         "I was born deaf. When I was about 10, I received a cochlear implant. It lets me hear and understand people, but my hearing is not typical, and spoken communication is still hard for me.",
         "Growing up, I had to find my own ways to learn and express myself. Writing became the way I communicate best. It lets me think carefully and say exactly what I mean.",
-        "That habit shapes how I work. I read documentation closely, I write things down, and I stay with a problem until I understand it.",
+        "That habit shapes how I work. I read documentation closely, I write things down, and I stay with a problem until I understand it. It also works well with remote teams, where most communication is written anyway.",
         "I'm not asking anyone to overlook my limitations, or to give me a chance out of sympathy. I'm asking for a fair chance to show what I can do, and to keep learning and contributing through my work.",
       ],
       quote: "Judge me by my work. I may not vocalize well, but my code will speak for me.",
@@ -39,6 +40,16 @@ export const site: SiteContent = {
   },
 
   experience: [
+    {
+      role: "Freelance Front-End Developer",
+      company: "Upwork",
+      start: "Oct 2026",
+      end: "Present",
+      location: "Remote",
+      highlights: [
+        "Available for freelance work: one-page business websites, mobile-friendly redesigns and fixes to existing sites.",
+      ],
+    },
     {
       role: "Full web apps and real-world projects",
       company: "Self-directed",
@@ -69,6 +80,8 @@ export const site: SiteContent = {
     },
   ],
 
+  education: [{ name: "Computer Studies", school: "Premier International School", year: "2020 – 2023" }],
+
   skills: [
     {
       group: "Frontend",
@@ -85,7 +98,12 @@ export const site: SiteContent = {
     },
     {
       group: "Backend (learning)",
-      items: [{ name: "Python (Flask)" }, { name: "PostgreSQL" }, { name: "Socket.IO" }],
+      items: [
+        { name: "Python (scripting & automation)" },
+        { name: "Flask" },
+        { name: "PostgreSQL" },
+        { name: "Socket.IO" },
+      ],
     },
     {
       group: "Tools",
@@ -164,11 +182,11 @@ export const site: SiteContent = {
       demo: "https://mustypro137.github.io/code-quest-academy/",
     },
     {
-      name: "DevPath Academy",
+      name: "Golden Crust Bakery",
       description:
-        "A web-development learning platform: read lessons, write and run code in the browser, check your level and track progress on a dashboard.",
-      tech: ["React", "TypeScript", "Vite", "Vitest"],
-      github: "https://github.com/Mustypro137/devpath-academy-web",
+        "A practice business website for a bakery, with a warm design, product highlights, business information and a responsive layout, improved based on feedback.",
+      tech: ["HTML", "CSS", "JavaScript"],
+      demo: "https://golden-crust-bakery-two-opal.vercel.app",
     },
     {
       name: "Cedar & Stone Café",

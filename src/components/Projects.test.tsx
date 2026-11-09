@@ -33,6 +33,14 @@ describe("Projects", () => {
     expect(screen.queryByRole("link", { name: "Live demo of Beta" })).toBeNull();
   });
 
+  it("hides the GitHub link when a project has no public repo", () => {
+    const privateRepo = { name: "Delta", description: "Private repo.", tech: ["CSS"], demo: "https://delta.example" };
+    render(<Projects projects={[privateRepo]} githubProfile={profile} />);
+    expect(screen.queryByRole("link", { name: "GitHub repo for Delta" })).toBeNull();
+    expect(screen.queryByText("GitHub ↗")).toBeNull();
+    expect(screen.getByRole("link", { name: "Live demo of Delta" })).toBeInTheDocument();
+  });
+
   it("links See more on GitHub to the profile", () => {
     render(<Projects projects={fullSite.projects} githubProfile={profile} />);
     expect(screen.getByRole("link", { name: /See more on GitHub/ })).toHaveAttribute("href", profile);

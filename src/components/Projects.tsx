@@ -36,9 +36,11 @@ export function Projects({ projects, githubProfile }: ProjectsProps) {
                 ))}
               </ul>
               <div className="mt-5 flex gap-5">
-                <ExternalLink href={project.github} className={linkClass} aria-label={`GitHub repo for ${project.name}`}>
-                  GitHub ↗
-                </ExternalLink>
+                {project.github && (
+                  <ExternalLink href={project.github} className={linkClass} aria-label={`GitHub repo for ${project.name}`}>
+                    GitHub ↗
+                  </ExternalLink>
+                )}
                 {project.demo && (
                   <ExternalLink href={project.demo} className={linkClass} aria-label={`Live demo of ${project.name}`}>
                     Live demo ↗

@@ -20,7 +20,8 @@ export type Project = {
   name: string;
   description: string;
   tech: string[];
-  github: string;
+  /** Leave out when the repo is private. */
+  github?: string;
   demo?: string;
   image?: string;
 };
