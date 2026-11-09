@@ -15,7 +15,7 @@ export default function Home() {
       <Nav name={site.name} />
       <main id="main" className="mx-auto max-w-5xl px-4 sm:px-6">
         <Hero {...site} />
-        <About about={site.about} />
+        <About about={site.about} photo={site.photo} />
         <Experience experience={site.experience} education={site.education} />
         <Skills skills={site.skills} />
         <WhyMe traits={site.traits} />

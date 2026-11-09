@@ -2,8 +2,6 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Nav, NAV_LINKS } from "./Nav";
 
-vi.mock("./ThemeToggle", () => ({ ThemeToggle: () => null }));
-
 const menuButton = () => screen.getByRole("button", { name: /menu/i });
 
 describe("Nav", () => {

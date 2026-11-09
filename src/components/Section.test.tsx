@@ -53,6 +53,18 @@ describe("Section", () => {
     expect(renderSection()).not.toHaveClass("reveal-pending");
   });
 
+  it("in stagger mode leaves the section visible and reveals only the heading block", () => {
+    vi.stubGlobal("IntersectionObserver", StubObserver);
+    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({ top: 2000 } as DOMRect);
+    const { container } = render(
+      <Section id="about" label="01. about" title="About" stagger>
+        <p>Body</p>
+      </Section>,
+    );
+    expect(container.querySelector("section#about")).not.toHaveClass("reveal-pending");
+    expect(screen.getByRole("heading", { level: 2, name: "About" }).parentElement).toHaveClass("reveal-pending");
+  });
+
   it("hides until intersecting, then reveals and stops observing", () => {
     vi.stubGlobal("IntersectionObserver", StubObserver);
     vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({ top: 2000 } as DOMRect);

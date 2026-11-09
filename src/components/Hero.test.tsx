@@ -45,4 +45,16 @@ describe("Hero", () => {
     render(<Hero {...minimalSite} />);
     expect(screen.queryByRole("link", { name: "Resume" })).toBeNull();
   });
+
+  it("offers a scroll cue that jumps to About", () => {
+    render(<Hero {...fullSite} />);
+    expect(screen.getByRole("link", { name: "Scroll to About" })).toHaveAttribute("href", "#about");
+  });
+
+  it("keeps decorative motion layers out of the accessibility tree", () => {
+    const { container } = render(<Hero {...fullSite} />);
+    for (const selector of [".hero-aurora", ".hero-ring", ".cube"]) {
+      expect(container.querySelector(selector)?.closest('[aria-hidden="true"]')).not.toBeNull();
+    }
+  });
 });

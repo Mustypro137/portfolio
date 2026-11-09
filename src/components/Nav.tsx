@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { ThemeToggle } from "./ThemeToggle";
 
 export const NAV_LINKS = [
   { href: "#about", label: "About" },
@@ -59,7 +58,6 @@ export function Nav({ name }: { name: string }) {
               </li>
             ))}
           </ul>
-          <ThemeToggle />
           <button
             type="button"
             aria-label={open ? "Close menu" : "Open menu"}

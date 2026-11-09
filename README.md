@@ -2,7 +2,7 @@
 
 My personal portfolio: a single-page site with my story, learning journey, skills and projects.
 
-Built with Next.js, React, TypeScript and Tailwind CSS. Light and dark themes, responsive from phone to desktop, keyboard-friendly, and tested with Vitest and React Testing Library.
+Built with Next.js, React, TypeScript and Tailwind CSS. Dark-only design with scroll and hover motion that respects reduced-motion settings, responsive from phone to desktop, keyboard-friendly, and tested with Vitest and React Testing Library.
 
 ## Run it locally
 

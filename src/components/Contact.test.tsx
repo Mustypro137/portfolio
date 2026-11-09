@@ -32,7 +32,27 @@ describe("Contact", () => {
   });
 });
 
+describe("Contact extras", () => {
+  it("offers a copy button next to the email link, and no second mailto link", () => {
+    render(<Contact contact={fullSite.contact} />);
+    expect(screen.getByRole("button", { name: "Copy email address" })).toBeInTheDocument();
+    expect(screen.getAllByRole("link").filter((l) => l.getAttribute("href")?.startsWith("mailto:"))).toHaveLength(1);
+  });
+
+  it("keeps the heading readable as one phrase when its words are split for animation", () => {
+    render(<Contact contact={fullSite.contact} />);
+    expect(screen.getByRole("heading", { level: 2, name: "Get in touch" })).toBeInTheDocument();
+  });
+});
+
 describe("Footer", () => {
+  it("lists the same social links as Contact, plus a back-to-top button", () => {
+    render(<Footer name="Jane Doe" contact={fullSite.contact} />);
+    expect(screen.getByRole("link", { name: "GitHub" })).toHaveAttribute("href", "https://github.com/jane");
+    expect(screen.getByRole("link", { name: "LinkedIn" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Back to top", hidden: true })).toBeInTheDocument();
+  });
+
   it("shows © current year and name", () => {
     render(<Footer name="Jane Doe" contact={fullSite.contact} />);
     expect(screen.getByText(new RegExp(`© ${new Date().getFullYear()} Jane Doe`))).toBeInTheDocument();

@@ -10,11 +10,21 @@ export type Job = {
 
 export type Education = { name: string; school: string; year: string };
 
-export type Skill = { name: string; strong?: boolean };
+export type Skill = {
+  name: string;
+  strong?: boolean;
+  /** One-line description shown when the skill is hovered, focused or tapped. */
+  note?: string;
+};
 
 export type SkillGroup = { group: string; items: Skill[] };
 
-export type Trait = { title: string; example: string };
+export type Trait = {
+  title: string;
+  example: string;
+  /** A real number from `example`, shown large and counted up. */
+  stat?: { value: number; suffix?: string; label: string };
+};
 
 export type Project = {
   name: string;
@@ -24,6 +34,8 @@ export type Project = {
   github?: string;
   demo?: string;
   image?: string;
+  /** Shown first, as a large showcase card. Intended for one project. */
+  featured?: boolean;
 };
 
 export type ContactLinks = {

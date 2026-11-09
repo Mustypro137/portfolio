@@ -1,36 +1,41 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
-
+/* Dark-only. Deep navy base, violet + electric-blue accents. */
 :root {
-  --bg: #f8fafc;
-  --surface: #ffffff;
-  --border: #e2e8f0;
-  --fg: #0f172a;
-  --muted: #475569;
-  --accent: #0f766e;
-  color-scheme: light;
-}
-
-.dark {
-  --bg: #0b1220;
-  --surface: #111a2e;
-  --border: #1e2a44;
-  --fg: #e2e8f0;
-  --muted: #94a3b8;
-  --accent: #2dd4bf;
+  --bg: #070b1f;
+  --surface: #0e1433;
+  --surface-2: #151c42;
+  --border: #252d5c;
+  --fg: #e9ecff;
+  --muted: #a0a9d4;
+  --accent: #a78bfa; /* violet */
+  --accent-2: #60a5fa; /* electric blue */
+  --gradient-brand: linear-gradient(120deg, #a78bfa 0%, #7c8cff 45%, #60a5fa 100%);
   color-scheme: dark;
+
+  /* Motion system: durations */
+  --dur-fast: 200ms;
+  --dur-base: 400ms;
+  --dur-slow: 700ms;
+  --dur-epic: 1200ms;
+  /* Motion system: easings */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-border: var(--border);
   --color-fg: var(--fg);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-display);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -40,30 +45,997 @@
 }
 
 body {
+  position: relative;
   background: var(--bg);
   color: var(--fg);
+  /* Full-bleed decorative layers (Hero aurora) may exceed the viewport: clip, don't scroll. */
+  overflow-x: clip;
+}
+
+/* Static ambient glow behind the whole page. Never animated, so it costs one paint. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 40rem at 85% -10%, rgb(124 92 255 / 0.18), transparent 60%),
+    radial-gradient(50rem 36rem at -10% 35%, rgb(59 130 246 / 0.12), transparent 60%);
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--accent) 30%, transparent);
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
-/* Scroll reveal (see Section.tsx). Content is only hidden once JS has confirmed
-   it can reveal it again. */
-.reveal {
-  transition: opacity 400ms ease, transform 400ms ease;
+:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 3px;
+}
+/* Sections that receive focus from an in-page link are landing spots, not controls: no big ring. */
+section[tabindex="-1"]:focus,
+main[tabindex="-1"]:focus {
+  outline: none;
 }
 
+.text-gradient {
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---- Scroll reveal (see useReveal.ts / Reveal.tsx / Section.tsx) ----
+   Content is only hidden once JS has confirmed it can reveal it again.
+   The reveal is a keyframe animation with `backwards` fill, so after it ends the
+   element returns to its normal styles and hover transforms keep working. */
 .reveal-pending {
   opacity: 0;
-  transform: translateY(16px);
 }
 
+.reveal-in {
+  animation: reveal-rise var(--dur-slow) var(--ease-out) var(--reveal-delay, 0ms) backwards;
+}
+.reveal-in[data-reveal="fade"] {
+  animation-name: reveal-fade;
+}
+.reveal-in[data-reveal="left"] {
+  animation-name: reveal-left;
+}
+.reveal-in[data-reveal="right"] {
+  animation-name: reveal-right;
+}
+/* Image uncovers bottom-to-top while settling from a slight zoom. */
+.reveal-in[data-reveal="wipe"] {
+  animation-name: reveal-wipe;
+  animation-duration: 1100ms;
+}
+.reveal-in[data-reveal="wipe"] img {
+  animation: img-settle 1500ms var(--ease-out) backwards;
+}
+@keyframes reveal-wipe {
+  from { opacity: 0; clip-path: inset(100% 0 0 0); }
+  to { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+@keyframes img-settle {
+  from { scale: 1.25; }
+}
+
+@keyframes reveal-rise {
+  from { opacity: 0; transform: translate3d(0, 24px, 0); }
+}
+@keyframes reveal-fade {
+  from { opacity: 0; }
+}
+@keyframes reveal-left {
+  from { opacity: 0; transform: translate3d(-32px, 0, 0); }
+}
+@keyframes reveal-right {
+  from { opacity: 0; transform: translate3d(32px, 0, 0); }
+}
+
+/* Small screens: shorter, shorter-travel reveals and no sideways slides (avoids overflow). */
+@media (max-width: 639px) {
+  .reveal-in {
+    animation-duration: var(--dur-base);
+  }
+  .reveal-in[data-reveal="left"],
+  .reveal-in[data-reveal="right"] {
+    animation-name: reveal-rise;
+  }
+}
+
+/* ---- Section heading ---- */
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.section-label::before {
+  content: "";
+  width: 2rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--gradient-brand);
+}
+.reveal-in .section-label::before {
+  animation: line-draw var(--dur-slow) var(--ease-out) 200ms backwards;
+  transform-origin: left;
+}
+@keyframes line-draw {
+  from { transform: scaleX(0); }
+}
+
+/* ---- Scroll rail (timelines) ---- */
+.rail-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--rail-x, 0.5rem);
+  width: 2px;
+  translate: -50% 0;
+  border-radius: 2px;
+  background: var(--border);
+}
+.rail-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(to bottom, var(--accent), var(--accent-2));
+  box-shadow: 0 0 12px rgb(124 92 255 / 0.6);
+  transform-origin: top;
+  transform: scaleY(var(--progress, 1));
+}
+/* Lit by default so content is complete without JS; the hook marks upcoming nodes "false". */
+.rail-node {
+  position: absolute;
+  z-index: 1;
+  top: var(--node-top, 0.5rem);
+  /* --node-x lets a node whose positioned parent is inset from the rail still sit on the line */
+  left: var(--node-x, var(--rail-x, 0.5rem));
+  width: 0.875rem;
+  height: 0.875rem;
+  translate: -50% 0;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--accent);
+  box-shadow:
+    0 0 0 4px rgb(167 139 250 / 0.18),
+    0 0 18px rgb(167 139 250 / 0.7);
+  transition:
+    scale var(--dur-base) var(--ease-spring),
+    background-color var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
+}
+.rail-node[data-lit="false"] {
+  scale: 0.8;
+  border-color: var(--border);
+  background: var(--bg);
+  box-shadow: none;
+}
+
+/* ---- Spotlight card ---- */
+.spotlight {
+  position: relative;
+  isolation: isolate;
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
+}
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+  background: radial-gradient(24rem circle at var(--mx, 50%) var(--my, 0%), rgb(167 139 250 / 0.16), transparent 60%);
+}
+@media (hover: hover) {
+  .spotlight:hover {
+    transform: translateY(-4px);
+    border-color: rgb(167 139 250 / 0.55);
+  }
+  .spotlight:hover::before {
+    opacity: 1;
+  }
+}
+
+.spotlight-tilt {
+  transform-style: flat;
+}
+@media (hover: hover) {
+  .spotlight-tilt:hover {
+    transform: perspective(900px) rotateX(var(--ty, 0deg)) rotateY(var(--tx, 0deg)) translateY(-4px);
+  }
+}
+
+/* Glowing gradient border, brightens on hover. Pairs with .spotlight (uses ::after). */
+.glow-border::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: var(--gradient-brand);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0.28;
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+@media (hover: hover) {
+  .glow-border:hover::after {
+    opacity: 1;
+  }
+}
+
+/* ---- Skills ---- */
+.skill-chip {
+  /* Chips pop in one after another once their card is revealed. */
+  --c: 0;
+}
+.reveal-in .skill-chip {
+  animation: chip-pop 500ms var(--ease-spring) calc(var(--c) * 45ms + 300ms) backwards;
+}
+@keyframes chip-pop {
+  from { opacity: 0; transform: translate3d(0, 10px, 0) scale(0.85); }
+}
+.skill-pill {
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+@media (hover: hover) {
+  button.skill-pill:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+  }
+}
+.note-in {
+  animation: reveal-rise var(--dur-base) var(--ease-out) backwards;
+}
+.skill-glyph {
+  color: var(--accent);
+  opacity: 0.16;
+}
+
+/* ---- Why hire me: card illustrations (play when the card is revealed) ---- */
+.art-stage {
+  position: relative;
+}
+.art-bar {
+  width: 2rem;
+  border-radius: 0.5rem 0.5rem 0.25rem 0.25rem;
+  background: linear-gradient(to top, rgb(124 92 255 / 0.15), var(--accent));
+  transform-origin: bottom;
+}
+.art-bar:last-child {
+  background: linear-gradient(to top, rgb(96 165 250 / 0.2), var(--accent-2));
+  box-shadow: 0 0 20px rgb(96 165 250 / 0.45);
+}
+.reveal-in .art-bar {
+  animation: bar-grow 700ms var(--ease-out) calc(var(--i) * 120ms + 250ms) backwards;
+}
+@keyframes bar-grow {
+  from { transform: scaleY(0); }
+}
+
+.art-block {
+  aspect-ratio: 1;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(167 139 250 / 0.5);
+  background: linear-gradient(135deg, rgb(167 139 250 / 0.35), rgb(167 139 250 / 0.08));
+}
+.art-block-alt {
+  border-color: rgb(96 165 250 / 0.5);
+  background: linear-gradient(135deg, rgb(96 165 250 / 0.35), rgb(96 165 250 / 0.08));
+}
+.reveal-in .art-block {
+  animation: block-drop 600ms var(--ease-spring) calc(var(--i) * 70ms + 250ms) backwards;
+}
+@keyframes block-drop {
+  from { opacity: 0; transform: translate3d(0, -28px, 0); }
+}
+
+.art-line {
+  height: 0.5rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), rgb(96 165 250 / 0.5));
+  transform-origin: left;
+}
+.art-line:nth-child(even) {
+  opacity: 0.55;
+}
+.reveal-in .art-line {
+  animation: line-grow 800ms var(--ease-out) calc(var(--i) * 140ms + 250ms) backwards;
+}
+@keyframes line-grow {
+  from { transform: scaleX(0); }
+}
+.art-cursor {
+  width: 0.5rem;
+  height: 1.1rem;
+  border-radius: 2px;
+  background: var(--accent-2);
+  animation: blink 1s steps(2, start) infinite;
+}
+@keyframes blink {
+  to { visibility: hidden; }
+}
+
+.art-ring {
+  stroke-dashoffset: 0;
+}
+.reveal-in .art-ring {
+  animation: ring-fill 1400ms var(--ease-out) 300ms backwards;
+}
+@keyframes ring-fill {
+  from { stroke-dashoffset: 100; }
+}
+
+.art-node {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent);
+}
+.art-node-me {
+  border-color: var(--accent-2);
+  color: var(--accent-2);
+  font-size: 1.1rem;
+  box-shadow: 0 0 18px rgb(96 165 250 / 0.4);
+}
+.art-link {
+  position: relative;
+  flex: 1 1 0;
+  max-width: 9rem;
+  height: 2px;
+  background: var(--border);
+}
+.art-pulse {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-top: -0.275rem;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+  animation: pulse-travel 2.6s var(--ease-in-out) infinite;
+}
+/* Animates `left` (not transform) so it always spans the link's actual width; it is one tiny abs-positioned dot. */
+@keyframes pulse-travel {
+  from { left: 0; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  to { left: calc(100% - 0.55rem); opacity: 0; }
+}
+
+/* ---- Projects ---- */
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  border-radius: 0.625rem;
+}
+@media (hover: hover) {
+  .btn:hover .btn-arrow {
+    transform: translate(2px, -2px);
+  }
+}
+
+.tech-tag {
+  --c: 0;
+  transition: transform var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
+}
+.reveal-in .tech-tag {
+  animation: chip-pop 450ms var(--ease-spring) calc(var(--c) * 50ms + 350ms) backwards;
+}
+@media (hover: hover) {
+  .tech-tag:hover {
+    transform: translateY(-2px);
+    background-color: rgb(167 139 250 / 0.2);
+  }
+}
+
+/* One diagonal light pass across a screenshot: on reveal, and again on hover. */
+.frame-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.13) 50%, transparent 65%);
+  transform: translateX(-120%);
+}
+.reveal-in .frame-sheen {
+  animation: sheen-pass 1400ms var(--ease-out) 700ms backwards;
+}
+@keyframes sheen-pass {
+  from { transform: translateX(-120%); }
+  to { transform: translateX(120%); }
+}
+@media (hover: hover) {
+  .group:hover .frame-sheen {
+    transform: translateX(120%);
+    transition: transform 900ms var(--ease-out);
+  }
+}
+
+/* Placeholder preview (shown until a real screenshot is added) */
+.ph-violet {
+  background:
+    radial-gradient(70% 90% at 85% 0%, rgb(124 92 255 / 0.4), transparent 70%),
+    linear-gradient(160deg, var(--surface-2), var(--surface));
+}
+.ph-blue {
+  background:
+    radial-gradient(70% 90% at 15% 0%, rgb(59 130 246 / 0.38), transparent 70%),
+    linear-gradient(200deg, var(--surface-2), var(--surface));
+}
+.ph-dot {
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 0.3rem;
+  background: var(--gradient-brand);
+}
+.ph-line {
+  height: 0.4rem;
+  border-radius: 999px;
+  background: rgb(233 236 255 / 0.18);
+  transform-origin: left;
+}
+.ph-card {
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(233 236 255 / 0.1);
+  background: rgb(233 236 255 / 0.05);
+}
+.reveal-in .ph-line {
+  animation: line-grow 700ms var(--ease-out) calc(var(--i, 0) * 110ms + 300ms) backwards;
+}
+
+/* Featured project (EnglishFlow AI) */
+.featured-glow {
+  background:
+    radial-gradient(50rem 28rem at 0% 0%, rgb(124 92 255 / 0.22), transparent 60%),
+    radial-gradient(40rem 24rem at 100% 100%, rgb(59 130 246 / 0.18), transparent 60%);
+}
+.featured-stage {
+  perspective: 1200px;
+}
+@media (min-width: 1024px) {
+  .featured-frame {
+    transform: rotateY(-9deg) rotateX(4deg);
+    transition: transform 700ms var(--ease-out);
+  }
+  .featured-stage:hover .featured-frame {
+    transform: rotateY(0deg) rotateX(0deg);
+  }
+}
+.featured-frame .browser-frame {
+  box-shadow: 0 30px 60px -20px rgb(0 0 0 / 0.6), 0 0 60px -10px rgb(124 92 255 / 0.35);
+}
+
+/* ---- Contact + Footer ---- */
+/* Heading words slide up out of a mask once their section reveals (see Section splitTitle). */
+.split-word {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  vertical-align: top;
+  margin-bottom: -0.14em;
+}
+.split-word-inner {
+  display: block;
+  padding-bottom: 0.14em;
+}
+.reveal-in .split-word-inner {
+  animation: word-up 900ms var(--ease-out) calc(var(--i, 0) * 90ms + 150ms) backwards;
+}
+
+.btn-lg {
+  padding: 0.85rem 1.4rem;
+  font-size: 0.95rem;
+}
+
+.contact-aurora {
+  position: absolute;
+  z-index: -1;
+  inset: 0 auto 0 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, transparent, #000 28%, #000 72%, transparent);
+}
+.contact-blob-a {
+  top: -10vmax;
+  left: -15vmax;
+  width: 55vmax;
+  height: 55vmax;
+  background: radial-gradient(closest-side, rgb(124 92 255 / 0.3), transparent);
+  animation: blob-b 30s var(--ease-in-out) infinite alternate;
+}
+.contact-blob-b {
+  bottom: -15vmax;
+  right: -15vmax;
+  width: 60vmax;
+  height: 60vmax;
+  background: radial-gradient(closest-side, rgb(59 130 246 / 0.26), transparent);
+  animation: blob-a 34s var(--ease-in-out) infinite alternate;
+}
+@media (max-width: 767px) {
+  .contact-blob-b {
+    animation: none;
+  }
+}
+
+/* Copy button: icon and label morph in on each state change. */
+.morph-in {
+  animation: morph-in var(--dur-base) var(--ease-spring) backwards;
+}
+@keyframes morph-in {
+  from { opacity: 0; transform: translate3d(0, 8px, 0) scale(0.8); }
+}
+.copy-btn[data-state="copied"] {
+  border-color: var(--accent-2);
+  color: var(--accent-2);
+  background: rgb(96 165 250 / 0.1);
+}
+
+/* Social icon pills */
+.social-link {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgb(255 255 255 / 0.03);
+  font-family: var(--font-mono);
+  color: var(--muted);
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+.social-link::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--gradient-brand);
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+.social-link:active {
+  transform: scale(0.96);
+}
+@media (hover: hover) {
+  .social-link:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+    color: var(--fg);
+  }
+  .social-link:hover::before {
+    opacity: 0.2;
+  }
+  .social-link:hover .draw-icon > * {
+    animation: icon-draw 700ms var(--ease-out);
+  }
+}
+.social-pop {
+  --c: 0;
+}
+.reveal-in .social-pop {
+  animation: chip-pop 450ms var(--ease-spring) calc(var(--c) * 80ms + 350ms) backwards;
+}
+/* Strokes are `pathLength="1"`; a one-long dash shows the whole line at rest. */
+.draw-icon > * {
+  stroke-dasharray: 1;
+}
+.reveal-in .draw-icon > * {
+  animation: icon-draw 900ms var(--ease-out) calc(var(--c, 0) * 80ms + 450ms) backwards;
+}
+@keyframes icon-draw {
+  from { stroke-dashoffset: 1; }
+}
+
+/* Footer */
+.footer-glow {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  bottom: -14rem;
+  width: min(70rem, 140vw);
+  height: 22rem;
+  translate: -50% 0;
+  background: radial-gradient(closest-side, rgb(124 92 255 / 0.2), transparent);
+  pointer-events: none;
+}
+.footer-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent) 30%, var(--accent-2) 70%, transparent);
+  transform-origin: center;
+}
+.reveal-in .footer-line {
+  animation: line-center 1200ms var(--ease-out) backwards;
+}
+@keyframes line-center {
+  from { transform: scaleX(0); }
+}
+
+/* Back to top: progress ring + arrow */
+.to-top {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: rgb(14 20 51 / 0.85);
+  color: var(--accent);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate3d(0, 14px, 0) scale(0.85);
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-spring),
+    visibility 0s linear var(--dur-base);
+}
+.to-top[data-visible="true"] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
+}
+.to-top-ring {
+  stroke-dashoffset: calc(100 - var(--p, 0) * 100);
+}
+@media (hover: hover) {
+  .to-top:hover .to-top-arrow {
+    animation: nudge-up 700ms var(--ease-in-out) infinite alternate;
+  }
+  .to-top[data-visible="true"]:hover {
+    color: var(--accent-2);
+  }
+}
+@keyframes nudge-up {
+  to { transform: translateY(-3px); }
+}
+@media (min-width: 640px) {
+  .to-top {
+    right: 2rem;
+    bottom: 2rem;
+  }
+}
+
+/* ---- Pull quote ---- */
+.quote-bar {
+  transform-origin: top;
+}
+.reveal-in .quote-bar {
+  animation: bar-draw 900ms var(--ease-out) backwards;
+}
+.reveal-in .quote-text {
+  animation: reveal-rise 800ms var(--ease-out) 350ms backwards;
+}
+@keyframes bar-draw {
+  from { transform: scaleY(0); }
+}
+
+/* ---- Buttons (shared) ---- */
+.magnetic {
+  display: inline-block;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  padding: 0.7rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn-primary {
+  background: var(--gradient-brand);
+  color: var(--bg);
+}
+.btn-ghost {
+  border: 1px solid var(--border);
+  background: rgb(255 255 255 / 0.03);
+  color: var(--fg);
+}
+.btn-arrow {
+  transition: transform var(--dur-base) var(--ease-out);
+}
+/* Light sweep across the primary button on hover. */
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.5) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 700ms var(--ease-out);
+}
+@media (hover: hover) {
+  .btn-primary:hover::before {
+    transform: translateX(120%);
+  }
+  .btn-primary:hover .btn-arrow {
+    transform: translateX(4px);
+  }
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgb(167 139 250 / 0.08);
+  }
+}
+
+/* ---- Hero ---- */
+.hero-rise {
+  animation: hero-rise var(--dur-slow) var(--ease-out) calc(var(--i, 0) * 90ms + 120ms) backwards;
+}
+@keyframes hero-rise {
+  from { opacity: 0; transform: translate3d(0, 22px, 0); }
+}
+
+/* Headline words slide up out of a mask. */
+.hero-word {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  vertical-align: top;
+  margin-bottom: -0.14em; /* cancels the descender padding below so line spacing is unchanged */
+}
+.hero-word-inner {
+  display: block;
+  padding-bottom: 0.14em;
+  animation: word-up 900ms var(--ease-out) calc(var(--i, 0) * 90ms + 120ms) backwards;
+}
+@keyframes word-up {
+  from { transform: translate3d(0, 120%, 0); }
+}
+.hero-name-gradient {
+  background-image: var(--gradient-brand);
+  background-size: 130% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation:
+    word-up 900ms var(--ease-out) calc(var(--i, 0) * 90ms + 120ms) backwards,
+    name-sweep 2400ms var(--ease-out) 700ms backwards;
+}
+@keyframes name-sweep {
+  from { background-position: 100% 0; }
+}
+
+/* Full-bleed gradient atmosphere. Only transforms animate. */
+.hero-aurora {
+  position: absolute;
+  z-index: -1;
+  top: -4rem;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, #000 60%, transparent);
+}
+.hero-blob {
+  position: absolute;
+  border-radius: 50%;
+}
+.hero-blob-a {
+  top: -35vmax;
+  right: -20vmax;
+  width: 70vmax;
+  height: 70vmax;
+  background: radial-gradient(closest-side, rgb(124 92 255 / 0.4), transparent);
+  animation: blob-a 26s var(--ease-in-out) infinite alternate;
+}
+.hero-blob-b {
+  bottom: -30vmax;
+  left: -25vmax;
+  width: 60vmax;
+  height: 60vmax;
+  background: radial-gradient(closest-side, rgb(59 130 246 / 0.32), transparent);
+  animation: blob-b 32s var(--ease-in-out) infinite alternate;
+}
+@keyframes blob-a {
+  to { transform: translate3d(-8vmax, 10vmax, 0) scale(1.15); }
+}
+@keyframes blob-b {
+  to { transform: translate3d(10vmax, -8vmax, 0) scale(1.1); }
+}
+@media (max-width: 767px) {
+  .hero-blob-b {
+    animation: none; /* one moving layer is enough on phones */
+  }
+}
+
+/* Portrait + shapes. --px/--py (-1..1) come from usePointerParallax. */
+.hero-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 20rem;
+  height: 16rem;
+  margin-inline: auto;
+}
+@media (min-width: 768px) {
+  .hero-stage {
+    width: 26rem;
+    max-width: none;
+    height: 26rem;
+  }
+}
+.hero-photo {
+  position: relative;
+  padding: 6px;
+  border-radius: 50%;
+  transform: perspective(900px) rotateY(calc(var(--px, 0) * 7deg)) rotateX(calc(var(--py, 0) * -7deg));
+  transition: transform var(--dur-base) var(--ease-out);
+  animation: photo-in 1100ms var(--ease-out) 350ms backwards;
+}
+@keyframes photo-in {
+  from { opacity: 0; scale: 0.82; clip-path: circle(0% at 50% 50%); }
+  to { opacity: 1; scale: 1; clip-path: circle(80% at 50% 50%); }
+}
+.hero-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(#a78bfa, #60a5fa 40%, transparent 70%, #a78bfa);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+  animation: spin 10s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.shape {
+  position: absolute;
+  translate: calc(var(--px, 0) * var(--depth, 0) * 1px) calc(var(--py, 0) * var(--depth, 0) * 1px);
+  transition: translate var(--dur-base) var(--ease-out);
+  animation: shape-in 900ms var(--ease-out) var(--enter, 0ms) backwards;
+}
+@keyframes shape-in {
+  from { opacity: 0; scale: 0.4; }
+}
+.shape-float {
+  animation: float var(--float-dur, 8s) var(--ease-in-out) var(--float-delay, 0s) infinite alternate;
+}
+@keyframes float {
+  from { transform: translate3d(0, -8px, 0) rotate(-3deg); }
+  to { transform: translate3d(0, 10px, 0) rotate(4deg); }
+}
+.cube-scene {
+  perspective: 600px;
+}
+
+.cube {
+  position: relative;
+  width: var(--s);
+  height: var(--s);
+  transform-style: preserve-3d;
+  animation: cube-spin 18s linear infinite;
+}
+@keyframes cube-spin {
+  from { transform: rotateX(-25deg) rotateY(0deg); }
+  to { transform: rotateX(-25deg) rotateY(360deg); }
+}
+.cube-face {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgb(167 139 250 / 0.55);
+  background: linear-gradient(135deg, rgb(167 139 250 / 0.3), rgb(96 165 250 / 0.1));
+}
+.cube-f1 { transform: translateZ(calc(var(--s) / 2)); }
+.cube-f2 { transform: rotateY(180deg) translateZ(calc(var(--s) / 2)); }
+.cube-f3 { transform: rotateY(90deg) translateZ(calc(var(--s) / 2)); }
+.cube-f4 { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); }
+.cube-f5 { transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); }
+.cube-f6 { transform: rotateX(-90deg) translateZ(calc(var(--s) / 2)); }
+
+.orb {
+  width: var(--s);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 28%, #fff 0, #c4b5fd 12%, #7c5cff 45%, #2563eb 100%);
+  box-shadow: 0 0 36px rgb(124 92 255 / 0.5);
+}
+
+.ring3d {
+  width: var(--s);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: conic-gradient(#a78bfa, #60a5fa, #a78bfa);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 9px), #000 calc(100% - 8px));
+  animation: ring-flip 10s linear infinite;
+}
+@keyframes ring-flip {
+  to { transform: rotateY(360deg) rotateX(20deg); }
+}
+
+.diamond {
+  width: var(--s);
+  aspect-ratio: 1;
+  rotate: 45deg;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(96 165 250 / 0.6);
+  background: linear-gradient(135deg, rgb(96 165 250 / 0.3), transparent);
+}
+
+/* Availability dot pulse + scroll cue */
+.hero-ping {
+  animation: ping 2s var(--ease-out) infinite;
+}
+@keyframes ping {
+  from { transform: scale(1); opacity: 0.7; }
+  to { transform: scale(2.8); opacity: 0; }
+}
+.hero-scroll-dot {
+  animation: scroll-dot 1.8s var(--ease-in-out) infinite;
+}
+@keyframes scroll-dot {
+  0% { transform: translateY(0); opacity: 1; }
+  70% { transform: translateY(12px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 0; }
+}
+
+/* Reduced motion: show everything immediately, in its final state. */
 @media (prefers-reduced-motion: reduce) {
-  .reveal,
   .reveal-pending {
     opacity: 1;
-    transform: none;
-    transition: none;
+  }
+  .reveal-in {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

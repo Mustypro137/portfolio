@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
+import { SmoothAnchors } from "@/components/motion/SmoothAnchors";
 import { site } from "@/content/site";
 import "./globals.css";
 
@@ -13,7 +14,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const title = `${site.name} — ${site.title}`;
+// Display face for headlines (Hero onward). Geist stays for body text.
+const display = Space_Grotesk({
+  variable: "--font-display",
+  subsets: ["latin"],
+});
+
+const title =`${site.name} — ${site.title}`;
 
 export const metadata: Metadata = {
   title,
@@ -21,22 +28,14 @@ export const metadata: Metadata = {
   openGraph: { title, description: site.pitch, type: "website" },
 };
 
-// Runs before first paint: saved choice wins, otherwise follow the system setting.
-const themeScript = `(function(){try{var t=localStorage.getItem("theme");var d=t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.classList.toggle("dark",d)}catch(e){}})()`;
-
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      suppressHydrationWarning
-    >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${display.variable} antialiased`}>
       <body className="min-h-screen bg-bg font-sans text-fg">
+        <SmoothAnchors />
         <a
           href="#main"
+          data-instant
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-accent focus:px-4 focus:py-2 focus:text-bg"
         >
           Skip to content

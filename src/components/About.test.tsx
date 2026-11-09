@@ -19,6 +19,16 @@ describe("About", () => {
     expect(screen.getByText(story.quote!).closest("blockquote")).toBeInTheDocument();
   });
 
+  it("shows a decorative portrait only when a photo is given", () => {
+    const { container, unmount } = render(<About about={fullSite.about} photo="/me.png" />);
+    const img = container.querySelector("img");
+    expect(img).toBeInTheDocument();
+    expect(img).toHaveAttribute("alt", "");
+    unmount();
+    render(<About about={fullSite.about} />);
+    expect(document.querySelector("img")).toBeNull();
+  });
+
   it("hides the story when not set", () => {
     render(<About about={minimalSite.about} />);
     expect(screen.queryByRole("heading", { level: 3 })).toBeNull();

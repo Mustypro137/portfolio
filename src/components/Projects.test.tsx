@@ -41,6 +41,36 @@ describe("Projects", () => {
     expect(screen.getByRole("link", { name: "Live demo of Delta" })).toBeInTheDocument();
   });
 
+  it("shows a labelled placeholder, hidden from assistive tech, when there is no screenshot", () => {
+    const { container } = render(<Projects projects={minimalSite.projects} githubProfile={profile} />);
+    const placeholder = container.querySelector(".ph");
+    expect(placeholder).toBeInTheDocument();
+    expect(placeholder).toHaveAttribute("aria-hidden", "true");
+    expect(placeholder).toHaveTextContent(/Placeholder/);
+    expect(screen.queryByRole("img")).toBeNull();
+  });
+
+  it("shows the featured project first, with its own label and a single heading", () => {
+    const projects = [
+      { name: "Plain", description: "Plain one.", tech: ["CSS"], demo: "https://plain.example" },
+      { name: "Star", description: "The star.", tech: ["Next.js"], demo: "https://star.example", featured: true },
+    ];
+    render(<Projects projects={projects} githubProfile={profile} />);
+    const names = screen.getAllByRole("heading", { level: 3 }).map((h) => h.textContent);
+    expect(names).toEqual(["Star", "Plain"]);
+    expect(screen.getByText("Featured project")).toBeInTheDocument();
+    expect(screen.getAllByRole("heading", { name: "Star" })).toHaveLength(1);
+  });
+
+  it("makes each card clickable through a hidden, unfocusable link, leaving one real demo link", () => {
+    const projects = [{ name: "Solo", description: "Only.", tech: ["CSS"], demo: "https://solo.example" }];
+    const { container } = render(<Projects projects={projects} githubProfile={profile} />);
+    const cover = container.querySelector('a[aria-hidden="true"]');
+    expect(cover).toHaveAttribute("href", "https://solo.example");
+    expect(cover).toHaveAttribute("tabindex", "-1");
+    expect(screen.getAllByRole("link", { name: /Live demo of Solo/ })).toHaveLength(1);
+  });
+
   it("links See more on GitHub to the profile", () => {
     render(<Projects projects={fullSite.projects} githubProfile={profile} />);
     expect(screen.getByRole("link", { name: /See more on GitHub/ })).toHaveAttribute("href", profile);

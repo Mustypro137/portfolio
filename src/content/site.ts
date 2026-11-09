@@ -86,36 +86,36 @@ export const site: SiteContent = {
     {
       group: "Frontend",
       items: [
-        { name: "HTML", strong: true },
-        { name: "CSS", strong: true },
-        { name: "Responsive, mobile-first design", strong: true },
-        { name: "JavaScript", strong: true },
-        { name: "Accessibility" },
-        { name: "TypeScript" },
-        { name: "React" },
-        { name: "Next.js" },
+        { name: "HTML", strong: true, note: "The structure and meaning of every web page." },
+        { name: "CSS", strong: true, note: "Layout, color and motion: how a page looks and adapts." },
+        { name: "Responsive, mobile-first design", strong: true, note: "Pages designed for small screens first, then scaled up cleanly." },
+        { name: "JavaScript", strong: true, note: "The language that makes pages interactive in the browser." },
+        { name: "Accessibility", note: "Building sites that work with a keyboard, a screen reader and everything in between." },
+        { name: "TypeScript", note: "JavaScript with types that catch mistakes before they run." },
+        { name: "React", note: "A library for building interfaces out of reusable components." },
+        { name: "Next.js", note: "A React framework for routing, rendering and deployment." },
       ],
     },
     {
       group: "Backend (learning)",
       items: [
-        { name: "Python (scripting & automation)" },
-        { name: "Flask" },
-        { name: "PostgreSQL" },
-        { name: "Socket.IO" },
+        { name: "Python (scripting & automation)", note: "Small scripts that automate repetitive work." },
+        { name: "Flask", note: "A lightweight Python framework for web back ends." },
+        { name: "PostgreSQL", note: "A relational database for structured data." },
+        { name: "Socket.IO", note: "Real-time, two-way messaging between browser and server." },
       ],
     },
     {
       group: "Tools",
       items: [
-        { name: "Git & GitHub", strong: true },
-        { name: "VS Code" },
-        { name: "Browser dev tools" },
-        { name: "Vitest" },
-        { name: "Vercel" },
-        { name: "GitHub Pages" },
-        { name: "Claude Code" },
-        { name: "ChatGPT" },
+        { name: "Git & GitHub", strong: true, note: "Version control and collaboration on code." },
+        { name: "VS Code", note: "The code editor I work in." },
+        { name: "Browser dev tools", note: "Inspecting, debugging and profiling pages in the browser." },
+        { name: "Vitest", note: "A fast test runner for automated tests." },
+        { name: "Vercel", note: "Hosting and deployment for web apps." },
+        { name: "GitHub Pages", note: "Free static site hosting straight from a repository." },
+        { name: "Claude Code", note: "An AI coding assistant I use to plan, explain and debug." },
+        { name: "ChatGPT", note: "An AI assistant I use to plan, explain and debug." },
       ],
     },
   ],
@@ -123,11 +123,13 @@ export const site: SiteContent = {
   traits: [
     {
       title: "I break problems into small steps",
+      stat: { value: 8, label: "milestones" },
       example:
         "I build a little, test it, then move on. EnglishFlow AI was planned in eight milestones, and I finished each one before starting the next.",
     },
     {
       title: "I learn by building",
+      stat: { value: 40, suffix: "+", label: "public repos" },
       example:
         "I read the docs, try things and fix what breaks. That took me from Odin Project exercises in 2024 to full-stack apps in 2026, across 40+ public repos.",
     },
@@ -138,6 +140,7 @@ export const site: SiteContent = {
     },
     {
       title: "I care about quality",
+      stat: { value: 100, label: "Lighthouse score" },
       example:
         "CodeType works with the keyboard only, has good contrast in both themes and scores 100 in Lighthouse for Performance, Accessibility and Best Practices.",
     },
@@ -151,6 +154,7 @@ export const site: SiteContent = {
   projects: [
     {
       name: "EnglishFlow AI",
+      featured: true,
       description:
         "An English-learning platform for levels A1 to C2, with accounts, structured lessons, spaced-repetition reviews, skill labs and an AI tutor.",
       tech: ["Next.js", "TypeScript", "PostgreSQL", "Anthropic API"],
