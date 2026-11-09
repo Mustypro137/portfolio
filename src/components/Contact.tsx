@@ -8,8 +8,8 @@ export function Contact({ contact }: { contact: ContactLinks }) {
     <Section id="contact" label="06. contact" title="Get in touch">
       <div className="max-w-xl">
         <p className="text-lg leading-relaxed text-muted">
-          Have a role in mind, a question about my work, or just want to say hi? My inbox is open and I&apos;ll get
-          back to you.
+          {contact.message ??
+            "Have a role in mind, a question about my work, or just want to say hi? My inbox is open and I'll get back to you."}
         </p>
         <a
           href={`mailto:${contact.email}`}

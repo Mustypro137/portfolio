@@ -48,7 +48,7 @@ export function Hero({ name, title, pitch, photo, openToWork, resume }: HeroProp
               width={240}
               height={240}
               priority
-              className="size-36 rounded-full object-cover ring-2 ring-accent ring-offset-4 ring-offset-bg sm:size-48 md:size-60"
+              className="size-36 rounded-full bg-surface object-cover object-top ring-2 ring-accent ring-offset-4 ring-offset-bg sm:size-48 md:size-60"
             />
           ) : (
             <div

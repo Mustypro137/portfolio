@@ -3,125 +3,188 @@ import type { SiteContent } from "./types";
 /**
  * All personal content for the site lives here.
  *
- * - Replace every line marked `TODO: fill in` with your own details.
- * - List experience newest first.
+ * - List the journey (experience) newest first.
  * - Put images (headshot, project screenshots) and your resume PDF in `public/`,
- *   then reference them by path, e.g. photo: "/headshot.jpg", resume: "/resume.pdf".
- * - Optional fields (photo, resume, companyUrl, location, education, linkedin,
- *   demo, image, other) can be left out — that part of the page is simply hidden.
+ *   then reference them by path, e.g. photo: "/headshot.png", resume: "/resume.pdf".
+ * - Optional fields (photo, resume, companyUrl, location, education, story, linkedin,
+ *   demo, image, other, message) can be left out — that part of the page is simply hidden.
  */
 export const site: SiteContent = {
-  name: "Your Name", // TODO: fill in
-  title: "Software Engineer", // TODO: fill in
-  pitch: "I build fast, reliable web apps and enjoy turning messy problems into simple tools.", // TODO: fill in
-  // photo: "/headshot.jpg",
+  name: "Mustapha Abdullahi",
+  title: "Front-End Developer",
+  pitch:
+    "I build simple, fast, accessible websites and web apps. I'm looking for my first front-end role, and I also build websites for small businesses.",
+  photo: "/headshot.png",
   openToWork: true,
   // resume: "/resume.pdf",
 
   about: {
     bio: [
-      "I'm a software engineer who likes building things people actually use. Write a sentence or two here about who you are and what you enjoy working on.", // TODO: fill in
-      "Add a second short paragraph about what you're looking for next, or what you do outside of code.", // TODO: fill in
+      "I'm a self-taught front-end developer. I learned to code through documentation, online resources and building my own projects, one step at a time.",
+      "I enjoy taking an idea and turning it into something people can use. I care about clean layouts, simple interactions and websites that work well for everyone.",
+      "I don't have a degree or industry experience yet. I have projects, practice and a steady habit of learning. My goal is to build strong fundamentals and grow into a developer a team can rely on.",
     ],
-    location: "City, Country", // TODO: fill in
-    workPreference: "Open to remote or hybrid roles", // TODO: fill in
+    location: "Abidjan, Ivory Coast",
+    workPreference: "A junior front-end role (remote), and freelance websites for small businesses",
+    story: {
+      title: "My story",
+      paragraphs: [
+        "I was born deaf. When I was about 10, I received a cochlear implant. It lets me hear and understand people, but my hearing is not typical, and spoken communication is still hard for me.",
+        "Growing up, I had to find my own ways to learn and express myself. Writing became the way I communicate best. It lets me think carefully and say exactly what I mean.",
+        "That habit shapes how I work. I read documentation closely, I write things down, and I stay with a problem until I understand it.",
+        "I'm not asking anyone to overlook my limitations, or to give me a chance out of sympathy. I'm asking for a fair chance to show what I can do, and to keep learning and contributing through my work.",
+      ],
+      quote: "Judge me by my work. I may not vocalize well, but my code will speak for me.",
+    },
   },
 
   experience: [
     {
-      role: "Software Engineer", // TODO: fill in
-      company: "Company Name", // TODO: fill in
-      start: "2024", // TODO: fill in
-      end: "Present", // TODO: fill in
-      location: "Remote", // TODO: fill in
+      role: "Full web apps and real-world projects",
+      company: "Self-directed",
+      start: "2026",
+      end: "Present",
       highlights: [
-        "Describe something you built or improved, ideally with a number (e.g. cut load time by 40%).", // TODO: fill in
-        "Describe a second achievement and the impact it had.", // TODO: fill in
+        "Built EnglishFlow AI, a Next.js and PostgreSQL learning platform with accounts, spaced-repetition reviews and an AI tutor, deployed on Vercel.",
+        "Moved from plain JavaScript to React and TypeScript, with automated tests in Vitest and React Testing Library.",
+        "Built responsive, accessible websites for fictional small businesses: a café, a coffee roaster, a furniture workshop and a family restaurant.",
       ],
     },
     {
-      role: "Software Engineering Intern", // TODO: fill in
-      company: "Previous Company", // TODO: fill in
-      start: "2023", // TODO: fill in
-      end: "2023", // TODO: fill in
+      role: "Front-end foundations",
+      company: "The Odin Project & Frontend Mentor",
+      start: "2024",
+      end: "2025",
       highlights: [
-        "Describe what you worked on and what you learned.", // TODO: fill in
+        "Built The Odin Project's projects: Rock Paper Scissors, Etch-a-Sketch, a sign-up form, Tic-Tac-Toe, a restaurant page and an admin dashboard.",
+        "Turned Frontend Mentor designs into responsive pages, like a space tourism website, a product list with a cart and a crowdfunding page.",
       ],
     },
-  ],
-
-  education: [
-    { name: "B.S. Computer Science", school: "University Name", year: "2024" }, // TODO: fill in
+    {
+      role: "First steps in code",
+      company: "Self-taught",
+      start: "2021",
+      end: "2022",
+      highlights: ["Opened my GitHub account and built my first small projects with HTML, CSS and JavaScript."],
+    },
   ],
 
   skills: [
     {
       group: "Frontend",
       items: [
-        { name: "TypeScript", strong: true }, // TODO: fill in
-        { name: "React", strong: true }, // TODO: fill in
-        { name: "Next.js" }, // TODO: fill in
-        { name: "Tailwind CSS" }, // TODO: fill in
+        { name: "HTML", strong: true },
+        { name: "CSS", strong: true },
+        { name: "Responsive, mobile-first design", strong: true },
+        { name: "JavaScript", strong: true },
+        { name: "Accessibility" },
+        { name: "TypeScript" },
+        { name: "React" },
+        { name: "Next.js" },
       ],
     },
     {
-      group: "Backend",
-      items: [
-        { name: "Node.js", strong: true }, // TODO: fill in
-        { name: "PostgreSQL" }, // TODO: fill in
-        { name: "REST APIs" }, // TODO: fill in
-      ],
+      group: "Backend (learning)",
+      items: [{ name: "Python (Flask)" }, { name: "PostgreSQL" }, { name: "Socket.IO" }],
     },
     {
       group: "Tools",
       items: [
-        { name: "Git" }, // TODO: fill in
-        { name: "Docker" }, // TODO: fill in
-        { name: "Vercel" }, // TODO: fill in
+        { name: "Git & GitHub", strong: true },
+        { name: "VS Code" },
+        { name: "Browser dev tools" },
+        { name: "Vitest" },
+        { name: "Vercel" },
+        { name: "GitHub Pages" },
+        { name: "Claude Code" },
+        { name: "ChatGPT" },
       ],
     },
   ],
 
   traits: [
     {
-      title: "Learns fast", // TODO: fill in
-      example: "Give a short real example — e.g. picked up a new framework and shipped a feature with it in a week.", // TODO: fill in
+      title: "I break problems into small steps",
+      example:
+        "I build a little, test it, then move on. EnglishFlow AI was planned in eight milestones, and I finished each one before starting the next.",
     },
     {
-      title: "Owns problems end to end", // TODO: fill in
-      example: "Give a short real example of a problem you saw through from start to finish.", // TODO: fill in
+      title: "I learn by building",
+      example:
+        "I read the docs, try things and fix what breaks. That took me from Odin Project exercises in 2024 to full-stack apps in 2026, across 40+ public repos.",
     },
     {
-      title: "Communicates clearly", // TODO: fill in
-      example: "Give a short real example — e.g. wrote docs that cut onboarding time for new teammates.", // TODO: fill in
+      title: "I communicate clearly in writing",
+      example:
+        "Writing is how I communicate best. Clear messages, notes, issues and pull requests are how I work, and my project READMEs explain what each app does and how to run it.",
+    },
+    {
+      title: "I care about quality",
+      example:
+        "CodeType works with the keyboard only, has good contrast in both themes and scores 100 in Lighthouse for Performance, Accessibility and Best Practices.",
+    },
+    {
+      title: "I use AI responsibly",
+      example:
+        "ChatGPT and Claude Code help me plan, explain code and debug. I review and understand the code before I use it, and I own the final result.",
     },
   ],
 
   projects: [
     {
-      name: "Project One", // TODO: fill in
-      description: "One or two sentences on what this project does and why it's interesting.", // TODO: fill in
-      tech: ["Next.js", "TypeScript"], // TODO: fill in
-      github: "https://github.com/your-username/project-one", // TODO: fill in
-      demo: "https://example.com", // TODO: fill in
+      name: "EnglishFlow AI",
+      description:
+        "An English-learning platform for levels A1 to C2, with accounts, structured lessons, spaced-repetition reviews, skill labs and an AI tutor.",
+      tech: ["Next.js", "TypeScript", "PostgreSQL", "Anthropic API"],
+      github: "https://github.com/Mustypro137/englishflow-ai",
+      demo: "https://englishflow-ai.vercel.app",
     },
     {
-      name: "Project Two", // TODO: fill in
-      description: "One or two sentences on what this project does and why it's interesting.", // TODO: fill in
-      tech: ["React", "Node.js"], // TODO: fill in
-      github: "https://github.com/your-username/project-two", // TODO: fill in
+      name: "CodeType",
+      description:
+        "A typing-practice app for programmers. Type real code and see your speed and accuracy live. Keyboard-friendly and scores 100 in Lighthouse.",
+      tech: ["HTML", "CSS", "JavaScript"],
+      github: "https://github.com/Mustypro137/codetype",
+      demo: "https://mustypro137.github.io/codetype/",
     },
     {
-      name: "Project Three", // TODO: fill in
-      description: "One or two sentences on what this project does and why it's interesting.", // TODO: fill in
-      tech: ["Python", "PostgreSQL"], // TODO: fill in
-      github: "https://github.com/your-username/project-three", // TODO: fill in
+      name: "Client Communication Coach",
+      description:
+        "Practise client conversations in ten realistic scenarios, get feedback on your English and tone, and draft professional WhatsApp and LinkedIn replies.",
+      tech: ["HTML", "CSS", "JavaScript"],
+      github: "https://github.com/Mustypro137/client-communication-coach",
+      demo: "https://mustypro137.github.io/client-communication-coach/",
+    },
+    {
+      name: "CodeQuest Academy",
+      description:
+        "A free learning site for Python, automation and AI. Python runs in the browser with Pyodide, so you can run real code and get instant feedback.",
+      tech: ["JavaScript", "Pyodide", "HTML", "CSS"],
+      github: "https://github.com/Mustypro137/code-quest-academy",
+      demo: "https://mustypro137.github.io/code-quest-academy/",
+    },
+    {
+      name: "DevPath Academy",
+      description:
+        "A web-development learning platform: read lessons, write and run code in the browser, check your level and track progress on a dashboard.",
+      tech: ["React", "TypeScript", "Vite", "Vitest"],
+      github: "https://github.com/Mustypro137/devpath-academy-web",
+    },
+    {
+      name: "Cedar & Stone Café",
+      description:
+        "A responsive, accessible website for a fictional café, with an Art Deco design, a filterable menu, an FAQ accordion and a validated contact form.",
+      tech: ["HTML", "CSS", "JavaScript"],
+      github: "https://github.com/Mustypro137/cedar-and-stone-cafe",
+      demo: "https://mustypro137.github.io/cedar-and-stone-cafe/",
     },
   ],
 
   contact: {
-    email: "you@example.com", // TODO: fill in
-    linkedin: "https://www.linkedin.com/in/your-profile", // TODO: fill in
-    github: "https://github.com/your-username", // TODO: fill in
+    email: "mustypro137@gmail.com",
+    linkedin: "https://www.linkedin.com/in/mustapha-abdullahi-133660230/",
+    github: "https://github.com/Mustypro137",
+    message:
+      "Hiring a junior front-end developer, or need a website for your business? Send me a message. I communicate best in writing, so email is the best way to reach me. I usually reply within one day.",
   },
 };

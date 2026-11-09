@@ -12,6 +12,11 @@ export const fullSite: SiteContent = {
     bio: ["First paragraph.", "Second paragraph."],
     location: "Lagos, Nigeria",
     workPreference: "Open to remote",
+    story: {
+      title: "My story",
+      paragraphs: ["Story paragraph one.", "Story paragraph two."],
+      quote: "My code will speak for me.",
+    },
   },
   experience: [
     {
@@ -68,6 +73,7 @@ export const fullSite: SiteContent = {
     linkedin: "https://linkedin.com/in/jane",
     github: "https://github.com/jane",
     other: [{ label: "Blog", url: "https://blog.example" }],
+    message: "Email me, I reply within a day.",
   },
 };
 

@@ -12,6 +12,14 @@ describe("Contact", () => {
     expect(email).not.toHaveAttribute("target");
   });
 
+  it("shows the custom message when set, a default otherwise", () => {
+    const { unmount } = render(<Contact contact={fullSite.contact} />);
+    expect(screen.getByText(fullSite.contact.message!)).toBeInTheDocument();
+    unmount();
+    render(<Contact contact={minimalSite.contact} />);
+    expect(screen.getByText(/My inbox is open/)).toBeInTheDocument();
+  });
+
   it("renders GitHub always, LinkedIn and other links only when set", () => {
     const { unmount } = render(<Contact contact={fullSite.contact} />);
     expect(screen.getByRole("link", { name: "GitHub" })).toHaveAttribute("href", "https://github.com/jane");

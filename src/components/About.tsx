@@ -21,6 +21,22 @@ export function About({ about }: { about: AboutInfo }) {
           </div>
         </dl>
       </div>
+
+      {about.story && (
+        <div className="mt-14 max-w-prose">
+          <h3 className="font-mono text-sm uppercase tracking-wider text-accent">{about.story.title}</h3>
+          <div className="mt-4 space-y-4 text-lg leading-relaxed text-muted">
+            {about.story.paragraphs.map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
+            ))}
+          </div>
+          {about.story.quote && (
+            <blockquote className="mt-8 border-l-2 border-accent pl-5 text-xl font-semibold leading-snug sm:text-2xl">
+              <p>{about.story.quote}</p>
+            </blockquote>
+          )}
+        </div>
+      )}
     </Section>
   );
 }

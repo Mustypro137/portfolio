@@ -6,7 +6,7 @@ type ExperienceProps = { experience: Job[]; education?: Education[] };
 
 export function Experience({ experience, education }: ExperienceProps) {
   return (
-    <Section id="experience" label="02. experience" title="Where I've worked">
+    <Section id="experience" label="02. journey" title="My journey">
       <ol className="relative space-y-10 border-l border-border pl-6 sm:pl-8">
         {experience.map((job) => (
           <li key={`${job.company}-${job.role}-${job.start}`} className="relative min-w-0 break-words">

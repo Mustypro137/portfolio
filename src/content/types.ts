@@ -30,12 +30,17 @@ export type ContactLinks = {
   linkedin?: string;
   github: string;
   other?: { label: string; url: string }[];
+  /** Replaces the default invitation text in the Contact section. */
+  message?: string;
 };
+
+export type Story = { title: string; paragraphs: string[]; quote?: string };
 
 export type AboutInfo = {
   bio: string[];
   location: string;
   workPreference: string;
+  story?: Story;
 };
 
 export type SiteContent = {
