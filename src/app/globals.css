@@ -1,26 +1,69 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --fg: #0f172a;
+  --muted: #475569;
+  --accent: #0f766e;
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0b1220;
+  --surface: #111a2e;
+  --border: #1e2a44;
+  --fg: #e2e8f0;
+  --muted: #94a3b8;
+  --accent: #2dd4bf;
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+/* Scroll reveal (see Section.tsx). Content is only hidden once JS has confirmed
+   it can reveal it again. */
+.reveal {
+  transition: opacity 400ms ease, transform 400ms ease;
+}
+
+.reveal-pending {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-pending {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
