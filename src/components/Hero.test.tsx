@@ -53,7 +53,7 @@ describe("Hero", () => {
 
   it("keeps decorative motion layers out of the accessibility tree", () => {
     const { container } = render(<Hero {...fullSite} />);
-    for (const selector of [".hero-aurora", ".hero-ring", ".cube"]) {
+    for (const selector of [".hero-aurora", ".poster-orbit", ".poster-halo", ".cube"]) {
       expect(container.querySelector(selector)?.closest('[aria-hidden="true"]')).not.toBeNull();
     }
   });

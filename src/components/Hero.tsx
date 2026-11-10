@@ -11,20 +11,40 @@ type HeroProps = Pick<SiteContent, "name" | "title" | "pitch" | "photo" | "openT
 /** Position in the load sequence; the CSS turns it into a stagger delay. */
 const step = (i: number) => ({ "--i": i }) as CSSProperties;
 
-const portraitSize = "size-36 sm:size-48 md:size-60";
-
 export function Hero({ name, title, pitch, photo, openToWork, resume }: HeroProps) {
   const words = name.split(" ");
 
   return (
-    <section className="relative isolate flex min-h-[calc(100svh-4rem)] items-center py-16">
+    <section className="relative isolate flex min-h-[calc(100svh-4rem)] flex-col justify-center py-16 md:flex-row md:items-center">
       <div aria-hidden="true" className="hero-aurora">
         <span className="hero-blob hero-blob-a" />
         <span className="hero-blob hero-blob-b" />
       </div>
 
-      <div className="grid w-full items-center gap-6 md:grid-cols-[1fr_auto] md:gap-12">
-        <div className="order-2 min-w-0 md:order-1">
+      {/* The portrait stage is first in the DOM so phones show the person on top. On md+ it is
+          positioned against the section's bottom-right corner and the spacer below holds its column. */}
+      <HeroStage>
+        {photo ? (
+          <Image
+            src={photo}
+            alt={`Photo of ${name}`}
+            width={768}
+            height={1024}
+            sizes="(min-width: 1024px) 34rem, (min-width: 768px) 30rem, 22rem"
+            loading="eager"
+            className="size-full object-contain object-bottom"
+          />
+        ) : (
+          <div aria-hidden="true" className="poster-fallback">
+            {getInitials(name)}
+          </div>
+        )}
+      </HeroStage>
+
+      <div className="grid w-full items-center gap-2 md:grid-cols-[1fr_30rem] md:gap-12 lg:grid-cols-[1fr_34rem]">
+        {/* Headline sits behind the figure on md+ (z 2 vs 3) so its last letters can tuck behind a
+            shoulder; on phones it sits in front (z 5) over the figure's faded base. */}
+        <div className="relative z-[5] -mt-14 min-w-0 md:z-[2] md:mt-0">
           {openToWork && (
             <p
               className="hero-rise inline-flex items-center gap-2 rounded-full border border-border bg-surface/80 px-3 py-1 font-mono text-xs text-muted"
@@ -40,7 +60,7 @@ export function Hero({ name, title, pitch, photo, openToWork, resume }: HeroProp
           <p className="hero-rise mt-6 font-mono text-sm text-accent" style={step(1)}>
             Hi, my name is
           </p>
-          <h1 className="mt-3 font-display text-5xl font-bold leading-[0.98] tracking-tight sm:text-6xl lg:text-7xl">
+          <h1 className="mt-3 font-display text-[clamp(3.5rem,9.5vw,8rem)] font-bold leading-[0.95] tracking-tight">
             {words.map((word, i) => (
               <Fragment key={i}>
                 {i > 0 && " "}
@@ -62,7 +82,7 @@ export function Hero({ name, title, pitch, photo, openToWork, resume }: HeroProp
             {title}
           </p>
           <p
-            className="hero-rise mt-6 max-w-xl text-lg leading-relaxed text-muted"
+            className="hero-rise mt-6 max-w-md text-lg leading-relaxed text-muted"
             style={step(3 + words.length)}
           >
             {pitch}
@@ -91,28 +111,7 @@ export function Hero({ name, title, pitch, photo, openToWork, resume }: HeroProp
           </div>
         </div>
 
-        <div className="order-1 md:order-2">
-          <HeroStage>
-            {photo ? (
-              <Image
-                src={photo}
-                alt={`Photo of ${name}`}
-                width={240}
-                height={240}
-                sizes="(min-width: 768px) 240px, (min-width: 640px) 192px, 144px"
-                loading="eager"
-                className={`relative ${portraitSize} rounded-full bg-surface-2 object-cover object-top`}
-              />
-            ) : (
-              <div
-                aria-hidden="true"
-                className={`relative flex ${portraitSize} items-center justify-center rounded-full bg-surface-2 font-mono text-4xl font-bold text-accent sm:text-5xl`}
-              >
-                {getInitials(name)}
-              </div>
-            )}
-          </HeroStage>
-        </div>
+        <div aria-hidden="true" className="hidden md:block" />
       </div>
 
       <a

@@ -824,6 +824,12 @@ main[tabindex="-1"]:focus {
   vertical-align: top;
   margin-bottom: -0.14em; /* cancels the descender padding below so line spacing is unchanged */
 }
+@media (min-width: 768px) {
+  /* The big headline may run past its column and tuck behind the figure. */
+  .hero-word {
+    max-width: none;
+  }
+}
 .hero-word-inner {
   display: block;
   padding-bottom: 0.14em;
@@ -891,45 +897,133 @@ main[tabindex="-1"]:focus {
   }
 }
 
-/* Portrait + shapes. --px/--py (-1..1) come from usePointerParallax. */
+/* Poster hero: a large cutout standing on the section's bottom edge, with layered depth
+   (backdrop rings and halo behind, the figure, then shapes in front).
+   --px/--py (-1..1) come from usePointerParallax. The stage itself creates no stacking
+   context, so each layer's z-index sits in the Hero section's own stack:
+   backdrop 1, headline text 2 (md+), figure 3, front shapes 4. */
 .hero-stage {
   position: relative;
-  display: grid;
-  place-items: center;
+  order: -1; /* phones: the portrait comes first, text pulls up over its faded base */
   width: 100%;
-  max-width: 20rem;
-  height: 16rem;
+  max-width: 22rem;
+  height: 24rem;
   margin-inline: auto;
 }
 @media (min-width: 768px) {
   .hero-stage {
-    width: 26rem;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    order: 0;
+    width: 30rem;
     max-width: none;
-    height: 26rem;
+    height: clamp(26rem, 72svh, 38rem);
+    margin-inline: 0;
   }
 }
-.hero-photo {
+@media (min-width: 1024px) {
+  .hero-stage {
+    width: 34rem;
+    height: clamp(28rem, 88svh, 46rem);
+  }
+}
+
+.poster-lane {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+  /* The figure drifts gently against the mouse, behind the shapes that move with it. */
+  translate: calc(var(--px, 0) * -10px) calc(var(--py, 0) * -6px);
+  transition: translate var(--dur-base) var(--ease-out);
+}
+@media (min-width: 768px) {
+  .poster-lane {
+    justify-content: flex-end;
+  }
+}
+.poster-figure {
   position: relative;
-  padding: 6px;
+  height: 100%;
+  aspect-ratio: 3 / 4;
+  /* Violet rim light around the silhouette. Static, so it is rasterised once. */
+  filter: drop-shadow(0 0 26px rgb(124 92 255 / 0.42)) drop-shadow(0 0 1.5px rgb(167 139 250 / 0.75));
+  animation: poster-in 1300ms var(--ease-out) 300ms backwards;
+}
+.poster-mask {
+  position: absolute;
+  inset: 0;
+  /* The base of the figure dissolves into the page. */
+  -webkit-mask-image: linear-gradient(to bottom, #000 68%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 68%, transparent 100%);
+}
+@keyframes poster-in {
+  from { opacity: 0; transform: translate3d(0, 7%, 0) scale(0.95); }
+}
+
+/* Backdrop: a soft halo and thin rotating ring arcs (each wrapped in a .shape for parallax).
+   The rings are square boxes with a circle painted in them, so while they rotate their corners
+   would stick out past the screen edge and count as sideways overflow. Clip to the stage. */
+.poster-backdrop {
+  overflow: clip;
+}
+.poster-halo {
+  width: 92%;
+  aspect-ratio: 1;
   border-radius: 50%;
-  transform: perspective(900px) rotateY(calc(var(--px, 0) * 7deg)) rotateX(calc(var(--py, 0) * -7deg));
-  transition: transform var(--dur-base) var(--ease-out);
-  animation: photo-in 1100ms var(--ease-out) 350ms backwards;
+  background: radial-gradient(closest-side, rgb(124 92 255 / 0.5), rgb(59 130 246 / 0.22) 55%, transparent);
 }
-@keyframes photo-in {
-  from { opacity: 0; scale: 0.82; clip-path: circle(0% at 50% 50%); }
-  to { opacity: 1; scale: 1; clip-path: circle(80% at 50% 50%); }
+.poster-orbit {
+  position: relative;
+  width: var(--w);
+  aspect-ratio: 1;
+  animation: spin var(--spin, 40s) linear infinite;
 }
-.hero-ring {
+.poster-orbit[data-reverse] {
+  animation-direction: reverse;
+}
+.poster-orbit-stroke {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: conic-gradient(#a78bfa, #60a5fa 40%, transparent 70%, #a78bfa);
-  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
-  animation: spin 10s linear infinite;
+  background: var(--arc);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--t, 2px)), #000 calc(100% - var(--t, 2px) + 1px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - var(--t, 2px)), #000 calc(100% - var(--t, 2px) + 1px));
+}
+.poster-orbit-dot {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin: -0.35rem 0 0 -0.35rem;
+  border-radius: 50%;
+  background: var(--dot, var(--accent-2));
+  box-shadow: 0 0 16px var(--dot, var(--accent-2));
 }
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* No photo supplied: a large initials disc instead of the cutout. */
+.poster-fallback {
+  position: absolute;
+  inset-inline: 12%;
+  bottom: 10%;
+  display: grid;
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 2px solid var(--accent);
+  font-family: var(--font-mono);
+  font-size: clamp(3rem, 12vw, 6rem);
+  font-weight: 700;
+  color: var(--accent);
 }
 
 .shape {
